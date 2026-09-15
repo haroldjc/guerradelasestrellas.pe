@@ -1,0 +1,79 @@
+# This site is not ready to be public. Keep it out of search indexes and
+# out of AI training and retrieval corpora.
+
+# Search engines and everything else.
+User-agent: *
+Disallow: /
+
+# --- AI crawlers, named explicitly so the intent survives any future
+# --- narrowing of the wildcard rule above.
+
+# OpenAI
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: OAI-SearchBot
+Disallow: /
+
+# Anthropic
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+# Google AI training (separate from Googlebot search indexing)
+User-agent: Google-Extended
+Disallow: /
+
+# Apple AI training (separate from Applebot)
+User-agent: Applebot-Extended
+Disallow: /
+
+# Common Crawl, the dataset behind many models
+User-agent: CCBot
+Disallow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Disallow: /
+
+# Meta
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+# ByteDance
+User-agent: Bytespider
+Disallow: /
+
+# Amazon
+User-agent: Amazonbot
+Disallow: /
+
+# Others
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: Omgilibot
+Disallow: /
+
+User-agent: YouBot
+Disallow: /
+
+User-agent: Timpibot
+Disallow: /
