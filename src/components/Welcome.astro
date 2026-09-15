@@ -1,9 +1,12 @@
 ---
 import Logo from './Logo.astro';
+import Starfield from './Starfield.astro';
 import VideoModal from './VideoModal.astro';
 ---
 
-<div id="container" class="bg-black">
+<div id="container" class="isolate bg-black">
+	<Starfield class="-z-10" />
+
 	<figure class="p-10 h-screen flex flex-col items-center justify-center">
 		<Logo class="w-full max-w-200" />
 
