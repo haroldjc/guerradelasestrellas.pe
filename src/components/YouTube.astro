@@ -1,0 +1,28 @@
+---
+interface Props {
+	/** The video ID from the YouTube URL (the `v=` parameter). */
+	id: string;
+	/** Accessible title for the player. */
+	title: string;
+	/**
+	 * When true, the embed URL is stored in `data-src` instead of `src`, so
+	 * nothing loads until something sets `src` (see VideoModal.astro).
+	 */
+	defer?: boolean;
+	class?: string;
+}
+const { id, title, defer = false, class: className } = Astro.props;
+
+const src = `https://www.youtube-nocookie.com/embed/${id}`;
+---
+
+<iframe
+	class:list={['aspect-video w-full', className]}
+	src={defer ? undefined : src}
+	data-src={defer ? src : undefined}
+	title={title}
+	loading="lazy"
+	allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+	referrerpolicy="strict-origin-when-cross-origin"
+	allowfullscreen
+></iframe>

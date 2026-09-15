@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+	/* Montserrat is self-hosted by Astro's Fonts API (see astro.config.mjs). */
+	--font-primary: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+
+	/* Keep the primary font as the page default and the `font-sans` utility. */
+	--font-sans: var(--font-primary);
+}

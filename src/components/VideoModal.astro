@@ -1,0 +1,99 @@
+---
+import YouTube from './YouTube.astro';
+
+interface Props {
+	/** The video ID from the YouTube URL (the `v=` parameter). */
+	id: string;
+	/** Accessible title for the player. */
+	title: string;
+}
+const { id, title } = Astro.props;
+
+/**
+ * Any element with `data-video-modal-open` opens this dialog.
+ */
+---
+
+<dialog
+	data-video-modal
+	aria-label={title}
+	class="m-auto w-[min(92vw,calc(80vh*16/9))] max-w-none bg-transparent p-0 backdrop:bg-black/85"
+>
+	<div class="relative">
+		<button
+			type="button"
+			data-video-modal-close
+			aria-label="Cerrar"
+			class="absolute -top-10 right-0 z-10 cursor-pointer p-2 text-white/70 transition-colors hover:text-white"
+		>
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+				<path d="M6 6l12 12M18 6L6 18" />
+			</svg>
+		</button>
+
+		<!-- Solid surface so the frame is visible while the player loads. -->
+		<div class="relative aspect-video w-full overflow-hidden rounded-sm bg-neutral-950">
+			<div
+				data-video-modal-loader
+				class="absolute inset-0 grid place-items-center transition-opacity duration-300"
+			>
+				<div
+					class="size-10 animate-spin rounded-full border-2 border-white/20 border-t-[#c82534]"
+					role="status"
+					aria-label="Cargando video"
+				>
+				</div>
+			</div>
+
+			<YouTube id={id} title={title} defer class="absolute inset-0 h-full" />
+		</div>
+	</div>
+</dialog>
+
+<script>
+	const dialog = document.querySelector<HTMLDialogElement>('[data-video-modal]');
+	const iframe = dialog?.querySelector<HTMLIFrameElement>('iframe');
+	const loader = dialog?.querySelector<HTMLElement>('[data-video-modal-loader]');
+	const embedSrc = iframe?.dataset.src ?? '';
+
+	if (dialog && iframe && loader) {
+		const open = () => {
+			// Show the spinner, then load the player and start playback.
+			loader.classList.remove('opacity-0');
+			iframe.src = `${embedSrc}?autoplay=1`;
+			dialog.showModal();
+		};
+
+		// Unloading the iframe is what actually stops the audio. Run it on every
+		// close path: the button, the backdrop, and Esc.
+		const unload = () => iframe.removeAttribute('src');
+
+		const close = () => {
+			unload();
+			dialog.close();
+		};
+
+		// The embed has rendered, so the spinner can go.
+		iframe.addEventListener('load', () => {
+			if (dialog.open) loader.classList.add('opacity-0');
+		});
+
+		document.querySelectorAll('[data-video-modal-open]').forEach((trigger) => {
+			trigger.addEventListener('click', (event) => {
+				event.preventDefault();
+				open();
+			});
+		});
+
+		dialog.querySelector('[data-video-modal-close]')?.addEventListener('click', close);
+
+		// Clicking the backdrop targets the dialog element itself.
+		dialog.addEventListener('click', (event) => {
+			if (event.target === dialog) close();
+		});
+
+		// Esc closes the dialog natively; these catch that path.
+		dialog.addEventListener('cancel', unload);
+		dialog.addEventListener('close', unload);
+	}
+</script>
