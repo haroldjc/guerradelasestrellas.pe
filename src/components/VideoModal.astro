@@ -4,18 +4,14 @@ import YouTube from './YouTube.astro';
 interface Props {
 	/** The video ID from the YouTube URL (the `v=` parameter). */
 	id: string;
-	/** Accessible title for the player. */
+	/** Accessible title for the player and the dialog. */
 	title: string;
 }
 const { id, title } = Astro.props;
-
-/**
- * Any element with `data-video-modal-open` opens this dialog.
- */
 ---
 
 <dialog
-	data-video-modal
+	data-video-modal={id}
 	aria-label={title}
 	class="m-auto w-[min(92vw,calc(80vh*16/9))] max-w-none bg-transparent p-0 backdrop:bg-black/85"
 >
@@ -51,12 +47,14 @@ const { id, title } = Astro.props;
 </dialog>
 
 <script>
-	const dialog = document.querySelector<HTMLDialogElement>('[data-video-modal]');
-	const iframe = dialog?.querySelector<HTMLIFrameElement>('iframe');
-	const loader = dialog?.querySelector<HTMLElement>('[data-video-modal-loader]');
-	const embedSrc = iframe?.dataset.src ?? '';
+	document.querySelectorAll<HTMLDialogElement>('[data-video-modal]').forEach((dialog) => {
+		const key = dialog.dataset.videoModal;
+		const iframe = dialog.querySelector<HTMLIFrameElement>('iframe');
+		const loader = dialog.querySelector<HTMLElement>('[data-video-modal-loader]');
+		if (!key || !iframe || !loader) return;
 
-	if (dialog && iframe && loader) {
+		const embedSrc = iframe.dataset.src ?? '';
+
 		const open = () => {
 			// Show the spinner, then load the player and start playback.
 			loader.classList.remove('opacity-0');
@@ -78,7 +76,7 @@ const { id, title } = Astro.props;
 			if (dialog.open) loader.classList.add('opacity-0');
 		});
 
-		document.querySelectorAll('[data-video-modal-open]').forEach((trigger) => {
+		document.querySelectorAll(`[data-video-modal-open="${key}"]`).forEach((trigger) => {
 			trigger.addEventListener('click', (event) => {
 				event.preventDefault();
 				open();
@@ -95,5 +93,5 @@ const { id, title } = Astro.props;
 		// Esc closes the dialog natively; these catch that path.
 		dialog.addEventListener('cancel', unload);
 		dialog.addEventListener('close', unload);
-	}
+	});
 </script>
